@@ -37,6 +37,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/Select.tsx'; // Import the Select component
+import { Checkbox } from './ui/CheckBox.tsx';
+import { Label } from './ui/Label.tsx';
+import { Separator } from './ui/Separator.tsx';
 
 const OptionsForm = () => {
   const form = useForm<optionsFormValues>({
@@ -49,6 +52,7 @@ const OptionsForm = () => {
       apiKey: '',
       syncBookmarks: false,
       defaultCollection: 'Unorganized',
+      keepOptionsOpen: false,
     },
   });
 
@@ -81,6 +85,7 @@ const OptionsForm = () => {
         apiKey: '',
         syncBookmarks: false,
         defaultCollection: 'Unorganized',
+        keepOptionsOpen: false,
       });
       await clearConfig();
       await clearBookmarksMetadata();
@@ -157,6 +162,7 @@ const OptionsForm = () => {
         baseUrl: values.baseUrl,
         defaultCollection: values.defaultCollection,
         syncBookmarks: values.syncBookmarks,
+        keepOptionsOpen: values.keepOptionsOpen,
         apiKey:
           values.method === 'apiKey' && values.apiKey
             ? values.apiKey
@@ -344,6 +350,33 @@ const OptionsForm = () => {
             )}
           />
           */}
+
+          {/* Preferences Section */}
+          <div className="pt-2">
+            <Separator className="mb-3" />
+            <h2 className="text-sm font-semibold mb-3">Preferences</h2>
+            <FormField
+              control={control}
+              name="keepOptionsOpen"
+              render={({ field }) => (
+                <FormItem>
+                  <Label className="flex items-center gap-2 w-fit cursor-pointer">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    Enable "More Options" by default
+                  </Label>
+                  <FormDescription>
+                    Always expand the "More Options" section when the popup opens.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
 
           <div className="flex justify-between">
             <div>

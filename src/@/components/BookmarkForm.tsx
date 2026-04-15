@@ -17,7 +17,7 @@ import { Button } from './ui/Button.tsx';
 import { TagInput } from './TagInput.tsx';
 import { Textarea } from './ui/Textarea.tsx';
 import { getCurrentTabInfo, updateBadge } from '../lib/utils.ts';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getConfig, isConfigured as getIsConfigured } from '../lib/config.ts';
 import { checkLinkExists, postLink } from '../lib/actions/links.ts';
@@ -38,12 +38,17 @@ import {
 } from './ui/Command.tsx';
 import { Checkbox } from './ui/CheckBox.tsx';
 import { Label } from './ui/Label.tsx';
+import React from 'react';
+import { Command as CommandPrimitive } from 'cmdk';
 
 const BookmarkForm = () => {
   const [openOptions, setOpenOptions] = useState<boolean>(false);
   const [openCollections, setOpenCollections] = useState<boolean>(false);
   const [uploadImage, setUploadImage] = useState<boolean>(false);
   const [state, setState] = useState<'capturing' | 'uploading' | null>(null);
+
+  // Ref to auto-focus the collection search input when dropdown opens
+  const commandInputRef = useRef<React.ElementRef<typeof CommandPrimitive.Input>>(null);
 
   const [isConfigured, setIsConfigured] = useState(false);
   const [isDuplicate, setIsDuplicate] = useState(false);
@@ -148,10 +153,28 @@ const BookmarkForm = () => {
       const duplicate = await checkLinkExists(c.baseUrl, c.apiKey);
       setIsDuplicate(duplicate);
       setIsConfigured(configured);
+
+      // Apply preferences from config
+      if (c.keepOptionsOpen) {
+        setOpenOptions(true);
+      }
+      // Auto-open the collection dropdown and focus the search field
+      setOpenCollections(true);
     };
 
     setTabInformation();
   }, []);
+
+  // Auto-focus the collection search input when the dropdown opens
+  useEffect(() => {
+    if (openCollections && commandInputRef.current) {
+      // Small delay to allow the dropdown DOM to mount before focusing
+      const timer = setTimeout(() => {
+        commandInputRef.current?.focus();
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [openCollections]);
 
   const { handleSubmit, control } = form;
 
@@ -276,6 +299,7 @@ const BookmarkForm = () => {
                         </Button>
                         <Command className="flex-grow min-w-full dropdown-content rounded-none">
                           <CommandInput
+                            ref={commandInputRef}
                             className="min-w-[280px]"
                             placeholder="Search Collection..."
                           />
