@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-interface ResponseTags {
+export interface ResponseTags {
   id: number;
   name: string;
   ownerId: number;
@@ -11,11 +11,30 @@ interface ResponseTags {
   };
 }
 
+// The Linkwarden Tags API returns a different shape than Collections:
+//   GET /api/v1/tags → { data: { tags: [...], nextCursor }, success, message }
+// We normalize here to { data: { response: [...] } } for consistency with
+// getCollections, so consumers can access .data.response uniformly.
+interface GetTagsApiResponse {
+  data: {
+    tags: ResponseTags[];
+    nextCursor: number | null;
+  };
+  success: boolean;
+  message: string;
+}
+
 export async function getTags(baseUrl: string, apiKey: string) {
   const url = `${baseUrl}/api/v1/tags`;
-  return await axios.get<{ response: ResponseTags[] }>(url, {
+  const res = await axios.get<GetTagsApiResponse>(url, {
     headers: {
       Authorization: `Bearer ${apiKey}`,
     },
   });
+
+  return {
+    data: {
+      response: res.data.data.tags,
+    },
+  };
 }

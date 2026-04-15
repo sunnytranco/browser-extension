@@ -87,3 +87,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
   3. `src/@/lib/validators/optionsForm.ts` (form schema)
   4. `src/@/components/OptionsForm.tsx` (defaultValues, reset, save, and UI)
 - **Tooling:** Do not modify formatting configs (`.prettierrc`, `.eslintrc.cjs`) unless explicitly requested.
+- **Build versioning:** Every commit merged into `ai-dev` must update the build version number:
+  - In `package.json`: set `"version"` to `"<semver>-ai-b<NNN>"` (e.g., `"1.5.1-ai-b001"`, `"1.5.1-ai-b002"`, ...).
+  - In `manifest.json`: the `"version"` field must remain numeric (Chrome/Firefox requirement). Add or update `"version_name"` to the same `"<semver>-ai-b<NNN>"` string — this field is displayed in `chrome://extensions` and is free-form.
+  - Increment `<NNN>` by 1 for each new session commit merged to `ai-dev`.
