@@ -204,7 +204,7 @@ const BookmarkForm = () => {
     data: collections,
     error: collectionError,
   } = useQuery({
-    queryKey: ['collections'],
+    queryKey: ['collections', config?.baseUrl, config?.apiKey],
     queryFn: async () => {
       const response = await getCollections(
         config?.baseUrl as string,
@@ -215,7 +215,7 @@ const BookmarkForm = () => {
         return a.pathname.localeCompare(b.pathname);
       });
     },
-    enabled: isConfigured,
+    enabled: isConfigured && !!config?.baseUrl && !!config?.apiKey,
   });
 
   const {
@@ -223,7 +223,7 @@ const BookmarkForm = () => {
     data: tags,
     error: tagsError,
   } = useQuery({
-    queryKey: ['tags'],
+    queryKey: ['tags', config?.baseUrl, config?.apiKey],
     queryFn: async () => {
       const response = await getTags(
         config?.baseUrl as string,
@@ -234,7 +234,7 @@ const BookmarkForm = () => {
         return a.name.localeCompare(b.name);
       });
     },
-    enabled: isConfigured,
+    enabled: isConfigured && !!config?.baseUrl && !!config?.apiKey,
   });
 
   return (
