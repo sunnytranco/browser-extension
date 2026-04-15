@@ -53,8 +53,26 @@ export async function setStorageItem(key: string, value: string) {
   }
 }
 
-export function openOptions() {
-  getBrowser().runtime.openOptionsPage();
+export function openOptions(e?: any) {
+  e?.preventDefault();
+  const browserType = getBrowser();
+  
+  try {
+    if (browserType.runtime.openOptionsPage) {
+      const res = browserType.runtime.openOptionsPage();
+      // Handle polyfill promises explicitly
+      if (res && typeof (res as any).catch === 'function') {
+        (res as any).catch(() => {
+          browserType.tabs.create({ url: browserType.runtime.getURL('options.html') });
+        });
+      }
+    } else {
+      browserType.tabs.create({ url: browserType.runtime.getURL('options.html') });
+    }
+  } catch (error) {
+    // Bulletproof fallback
+    browserType.tabs.create({ url: browserType.runtime.getURL('options.html') });
+  }
 }
 
 export async function updateBadge(tabId: number | undefined) {
