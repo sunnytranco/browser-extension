@@ -5,7 +5,7 @@
   "description": "The browser extension for Linkwarden.",
   "homepage_url": "https://linkwarden.app/",
   "version": "1.5.1",
-  "version_name": "1.5.1-ai-b002",
+  "version_name": "1.5.1-ai-b003",
   "action": {
     "default_popup": "index.html",
     "default_icon": {
@@ -17,7 +17,7 @@
     "default_title": "Linkwarden"
   },
   "options_ui": {
-    "page": "src/pages/Options/options.html",
+    "page": "options.html",
     "browser_style": false
   },
   "icons": { "16": "16.png", "32": "32.png", "48": "48.png", "128": "128.png" },
