@@ -1,7 +1,7 @@
 {
   "name": "linkwarden-extension",
   "private": true,
-  "version": "1.5.1-ai-b004",
+  "version": "1.5.1-ai-b005",
   "author": "Jordan Higuera Higuera <jordan_higuera@hotmail.com>",
   "type": "module",
   "license": "MIT",

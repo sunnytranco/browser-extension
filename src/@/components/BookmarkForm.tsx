@@ -178,26 +178,16 @@ const BookmarkForm = () => {
 
   const { handleSubmit, control } = form;
 
-  // useEffect(() => {
-  //   const syncBookmarks = async () => {
-  //     try {
-  //       const { syncBookmarks, baseUrl, defaultCollection } = await getConfig();
-  //       form.setValue('collection', {
-  //         name: defaultCollection,
-  //       });
-  //       if (!syncBookmarks) {
-  //         return;
-  //       }
-  //       if (await isConfigured()) {
-  //         await saveLinksInCache(baseUrl);
-  //         await syncLocalBookmarks(baseUrl);
-  //       }
-  //     } catch (error) {
-  //       console.error(error);
-  //     }
-  //   };
-  //   syncBookmarks();
-  // }, [form]);
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+        e.preventDefault();
+        handleSubmit((values) => onSubmit(values))();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [handleSubmit, onSubmit]);
 
   const {
     isLoading: loadingCollections,
